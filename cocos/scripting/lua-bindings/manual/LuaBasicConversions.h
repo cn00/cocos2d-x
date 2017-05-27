@@ -1310,6 +1310,7 @@ void std_vector_vec3_to_luaval(lua_State* L, const std::vector<cocos2d::Vec3>& i
  * @param inValue a std::map<std::string, std::string> value.
  */
 void std_map_string_string_to_luaval(lua_State* L, const std::map<std::string, std::string>& inValue);
+void std_vector_string_to_luaval(lua_State* L, const std::vector<std::string>& inValue);
 
 // Follow 2 function is added for Cocos Studio to make lua lib can be compile as dynamic library
 CC_LUA_DLL extern bool luaval_to_node(lua_State* L, int lo, const char* type, cocos2d::Node** node);

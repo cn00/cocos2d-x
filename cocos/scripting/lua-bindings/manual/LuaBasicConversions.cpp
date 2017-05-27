@@ -3351,6 +3351,23 @@ void std_map_string_string_to_luaval(lua_State* L, const std::map<std::string, s
     }
 }
 
+void std_vector_string_to_luaval(lua_State* L, const std::vector<std::string>& inValue)
+{
+	if (nullptr == L)
+		return;
+
+	lua_newtable(L);
+
+	int index = 1;
+	for (auto iter = inValue.begin(); iter != inValue.end(); ++iter)
+	{
+		lua_pushnumber(L, (lua_Number)index);
+		lua_pushstring(L, iter->c_str());
+		lua_rawset(L, -3);
+		++index;
+	}
+}
+
 bool luaval_to_std_map_string_string(lua_State* L, int lo, std::map<std::string, std::string>* ret, const char* funcName)
 {
     if (nullptr == L || nullptr == ret || lua_gettop(L) < lo)
