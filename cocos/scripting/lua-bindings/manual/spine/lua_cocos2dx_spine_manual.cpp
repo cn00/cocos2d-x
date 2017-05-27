@@ -364,6 +364,52 @@ CC_DEPRECATED_ATTRIBUTE static int tolua_spine_SkeletoneAnimation_setBlendFunc(l
     return lua_cocos2dx_spine_SkeletonRenderer_setBlendFunc(tolua_S);
 }
 
+static int lua_cocos2dx_spine_SkeletonAnimation_getAllAnimationNames(lua_State* tolua_S) {
+	int argc = 0;
+	spine::SkeletonAnimation* cobj = nullptr;
+	bool ok = true;
+
+#if COCOS2D_DEBUG >= 1
+	tolua_Error tolua_err;
+#endif
+
+
+#if COCOS2D_DEBUG >= 1
+	if (!tolua_isusertype(tolua_S, 1, "sp.SkeletonAnimation", 0, &tolua_err)) goto tolua_lerror;
+#endif
+
+	cobj = (spine::SkeletonAnimation*)tolua_tousertype(tolua_S, 1, 0);
+
+#if COCOS2D_DEBUG >= 1
+	if (!cobj)
+	{
+		tolua_error(tolua_S, "invalid 'cobj' in function 'lua_cocos2dx_spine_SkeletonAnimation_setAnimation'", nullptr);
+		return 0;
+	}
+#endif
+	argc = lua_gettop(tolua_S) - 1;
+	do {
+		if (argc == 0) {
+			std::vector<std::string> ret;
+			for (int i = 0; i < cobj->getSkeleton()->data->animationsCount; ++i) {
+				ret.push_back(std::string(cobj->getSkeleton()->data->animations[i]->name));
+			}
+			std_vector_string_to_luaval(tolua_S, ret);
+			return 1;
+		}
+	} while (0);
+	ok = true;
+	luaL_error(tolua_S, "%s has wrong number of arguments: %d, was expecting %d \n", "cc.Node:getChildren", argc, 0);
+	return 0;
+
+#if COCOS2D_DEBUG >= 1
+	tolua_lerror:
+				tolua_error(tolua_S, "#ferror in function 'lua_cocos2dx_Node_getChildren'.", &tolua_err);
+#endif
+
+	return 0;
+}
+
 static int lua_cocos2dx_spine_SkeletonAnimation_addAnimation(lua_State* tolua_S)
 {
     int argc = 0;
@@ -508,7 +554,8 @@ static void extendCCSkeletonAnimation(lua_State* L)
         tolua_function(L, "unregisterSpineEventHandler", tolua_Cocos2d_CCSkeletonAnimation_unregisterSpineEventHandler00);
         tolua_function(L, "setBlendFunc", tolua_spine_SkeletoneAnimation_setBlendFunc);
         tolua_function(L, "addAnimation", lua_cocos2dx_spine_SkeletonAnimation_addAnimation);
-        tolua_function(L, "setAnimation", lua_cocos2dx_spine_SkeletonAnimation_setAnimation);
+		tolua_function(L, "setAnimation", lua_cocos2dx_spine_SkeletonAnimation_setAnimation);
+		tolua_function(L, "getAllAnimationNames", lua_cocos2dx_spine_SkeletonAnimation_getAllAnimationNames);
     }
     lua_pop(L, 1);
     
