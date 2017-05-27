@@ -4751,6 +4751,53 @@ tolua_lerror:
 }
 #endif
 
+int lua_cocos2dx_EventCustom_getUserDataStr(lua_State* tolua_S)
+{
+	int argc = 0;
+	cocos2d::EventCustom* cobj = nullptr;
+	bool ok = true;
+
+#if COCOS2D_DEBUG >= 1
+	tolua_Error tolua_err;
+#endif
+
+
+#if COCOS2D_DEBUG >= 1
+	if (!tolua_isusertype(tolua_S, 1, "cc.EventCustom", 0, &tolua_err)) goto tolua_lerror;
+#endif
+
+	cobj = (cocos2d::EventCustom*)tolua_tousertype(tolua_S, 1, 0);
+
+#if COCOS2D_DEBUG >= 1
+	if (!cobj)
+	{
+		tolua_error(tolua_S, "invalid 'cobj' in function 'lua_cocos2dx_EventCustom_getUserDataStr'", nullptr);
+		return 0;
+	}
+#endif
+
+	argc = lua_gettop(tolua_S) - 1;
+	if (argc == 0)
+	{
+		if (!ok)
+		{
+			tolua_error(tolua_S, "invalid arguments in function 'lua_cocos2dx_EventCustom_getUserDataStr'", nullptr);
+			return 0;
+		}
+		const std::string& ret = (char*)cobj->getUserData();
+		tolua_pushcppstring(tolua_S, ret);
+		return 1;
+	}
+	luaL_error(tolua_S, "%s has wrong number of arguments: %d, was expecting %d \n", "cc.EventCustom:getUserDataStr", argc, 0);
+	return 0;
+
+#if COCOS2D_DEBUG >= 1
+	tolua_lerror:
+				tolua_error(tolua_S, "#ferror in function 'lua_cocos2dx_EventCustom_getUserDataStr'.", &tolua_err);
+#endif
+
+	return 0;
+}
 static void extendScene(lua_State* tolua_S)
 {
     lua_pushstring(tolua_S, "cc.Scene");
@@ -4884,6 +4931,15 @@ static void extendMenu(lua_State* tolua_S)
     lua_pop(tolua_S, 1);
 }
 
+static void extendEventCustom(lua_State* tolua_S) {
+	lua_pushstring(tolua_S, "cc.EventCustom");
+	lua_rawget(tolua_S, LUA_REGISTRYINDEX);
+	if (lua_istable(tolua_S, -1))
+	{
+		tolua_function(tolua_S, "getUserDataStr", lua_cocos2dx_EventCustom_getUserDataStr);
+	}
+	lua_pop(tolua_S, 1);
+}
 static void extendNode(lua_State* tolua_S)
 {
     lua_pushstring(tolua_S,"cc.Node");
@@ -7958,7 +8014,7 @@ int register_all_cocos2dx_manual(lua_State* tolua_S)
 {
     if (NULL == tolua_S)
         return 0;
-
+	extendEventCustom(tolua_S);
     extendNode(tolua_S);
     extendScene(tolua_S);
     extendLayer(tolua_S);
