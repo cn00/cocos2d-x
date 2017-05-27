@@ -24,7 +24,8 @@ int  AppEvent::getEventType()
 
 void AppEvent::setDataString(std::string data)
 {
-    _dataString = data;
+	_dataString = data;
+	setUserData((void*)_dataString.c_str());
 }
 
 std::string AppEvent::getDataString()
