@@ -48,7 +48,10 @@ LuaSkeletonAnimation* LuaSkeletonAnimation::createWithFile (const char* skeleton
 {
 	LuaSkeletonAnimation* node = new (std::nothrow) LuaSkeletonAnimation();
     spAtlas* atlas = spAtlas_createFromFile(atlasFile, nullptr);
-    node->initWithJsonFile(skeletonDataFile, atlas, scale);
+	if(std::string(skeletonDataFile).rfind(".skel") != std::string::npos)
+		node->initWithBinaryFile(skeletonDataFile, atlas, scale);
+	else
+		node->initWithJsonFile(skeletonDataFile, atlas, scale);
 	node->autorelease();
 	return node;
 }
