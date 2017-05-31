@@ -1033,14 +1033,15 @@ static int lua_cocos2dx_XMLHttpRequest_getResponseHeader(lua_State* L)
         
         string value = streamData.str();
         
-        
-        auto iter = self->getHttpHeader().find(value);
-        if (iter != self->getHttpHeader().end())
+		const auto& httpHeader = self->getHttpHeader();
+        auto iter = httpHeader.find(value);
+        if (iter != httpHeader.end())
         {
             tolua_pushstring(L, (iter->second).c_str());
             return 1;
         }
-    }
+		return 0;
+	}
     
     luaL_error(L, "'getResponseHeader' function of XMLHttpRequest wrong number of arguments: %d, was expecting %d\n", argc, 1);
     return 0;
