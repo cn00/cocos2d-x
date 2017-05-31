@@ -30558,7 +30558,22 @@ int lua_cocos2dx_ui_Scale9Sprite_setSpriteFrame(lua_State* tolua_S)
 #endif
 
     argc = lua_gettop(tolua_S)-1;
-    if (argc == 2) 
+	if (argc == 1)
+	{
+		cocos2d::SpriteFrame* arg0;
+
+		ok &= luaval_to_object<cocos2d::SpriteFrame>(tolua_S, 2, "cc.SpriteFrame", &arg0, "ccui.Scale9Sprite:setSpriteFrame");
+
+		if (!ok)
+		{
+			tolua_error(tolua_S, "invalid arguments in function 'lua_cocos2dx_ui_Scale9Sprite_setSpriteFrame'", nullptr);
+			return 0;
+		}
+		cobj->setSpriteFrame(arg0);
+		lua_settop(tolua_S, 1);
+		return 1;
+	}
+	if (argc == 2)
     {
         cocos2d::SpriteFrame* arg0;
         cocos2d::Rect arg1;

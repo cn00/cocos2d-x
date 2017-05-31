@@ -200,6 +200,19 @@ int  ScriptHandlerMgr::getObjectHandler(void* object,ScriptHandlerMgr::HandlerTy
     return 0;
 }
 
+void ScriptHandlerMgr::removeAllObjectHandlers() {
+	for (auto it = _mapObjectHandlers.begin(); it != _mapObjectHandlers.end(); ++it) {
+		//removeObjectAllHandlers(it->first);
+		if (!it->second.empty())
+		{
+			for (auto iterVec = it->second.begin(); iterVec != it->second.end(); ++iterVec) {
+				LuaEngine::getInstance()->removeScriptHandler(iterVec->second);
+			}
+			(it->second).clear();
+		}
+		_mapObjectHandlers.erase(it);
+	}
+}
 void ScriptHandlerMgr::removeObjectAllHandlers(void* object)
 {
     if (nullptr == object || _mapObjectHandlers.empty())

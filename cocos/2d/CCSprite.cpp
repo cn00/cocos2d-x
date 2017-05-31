@@ -1561,6 +1561,10 @@ void Sprite::setSpriteFrame(const std::string &spriteFrameName)
 
 void Sprite::setSpriteFrame(SpriteFrame *spriteFrame)
 {
+    if (spriteFrame == NULL ) {
+		CCLOGERROR("null spriteFrame:luaID[%d]", _luaID);
+        return;
+    }
     // retain the sprite frame
     // do not removed by SpriteFrameCache::removeUnusedSpriteFrames
     if (_spriteFrame != spriteFrame)

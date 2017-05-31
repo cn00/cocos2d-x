@@ -221,76 +221,86 @@ int executeSpineEvent(LuaSkeletonAnimation* skeletonAnimation, int handler, spEv
 
 int tolua_Cocos2d_CCSkeletonAnimation_registerSpineEventHandler00(lua_State* tolua_S)
 {
+	int argc = lua_gettop(tolua_S) - 1;
 #ifndef TOLUA_RELEASE
     tolua_Error tolua_err;
     if (
-        !tolua_isusertype(tolua_S,1,"sp.SkeletonAnimation",0,&tolua_err) ||
-        !toluafix_isfunction(tolua_S,2,"LUA_FUNCTION",0,&tolua_err) ||
-        !tolua_isnumber(tolua_S, 3, 0, &tolua_err)                  ||
-        !tolua_isnoobj(tolua_S,4,&tolua_err)
+        !tolua_isusertype(tolua_S,1,"sp.SkeletonAnimation",0,&tolua_err) 
+        || !toluafix_isfunction(tolua_S,2,"LUA_FUNCTION",0,&tolua_err) 
+        //|| !tolua_isnumber(tolua_S, 3, 0, &tolua_err)
+		//|| !tolua_isnoobj(tolua_S,4,&tolua_err)
         )
         goto tolua_lerror;
     else
 #endif
     {
     	LuaSkeletonAnimation* self    = (LuaSkeletonAnimation*)  tolua_tousertype(tolua_S,1,0);
-        if (NULL != self ) {
-            int handler = (  toluafix_ref_function(tolua_S,2,0));
-            spEventType eventType = static_cast<spEventType>((int)tolua_tonumber(tolua_S, 3, 0));
-            
-            switch (eventType) {
-                case spEventType::SP_ANIMATION_START:
-                    {
-                        self->setStartListener([=](spTrackEntry* entry){
-                            executeSpineEvent(self, handler, eventType, entry);
-                        });
-                        ScriptHandlerMgr::getInstance()->addObjectHandler((void*)self, handler, ScriptHandlerMgr::HandlerType::EVENT_SPINE_ANIMATION_START);
-                    }
-                    break;
-                case spEventType::SP_ANIMATION_INTERRUPT:
-                    {
-                        self->setInterruptListener([=](spTrackEntry* entry){
-                            executeSpineEvent(self, handler, eventType, entry);
-                        });
-                        ScriptHandlerMgr::getInstance()->addObjectHandler((void*)self, handler, ScriptHandlerMgr::HandlerType::EVENT_SPINE_ANIMATION_INTERRUPT);
-                    }
-                    break;
-                case spEventType::SP_ANIMATION_END:
-                    {
-                        self->setEndListener([=](spTrackEntry* entry){
-                            executeSpineEvent(self, handler, eventType, entry);
-                        });
-                        ScriptHandlerMgr::getInstance()->addObjectHandler((void*)self, handler, ScriptHandlerMgr::HandlerType::EVENT_SPINE_ANIMATION_END);
-                    }
-                    break;
-                case spEventType::SP_ANIMATION_DISPOSE:
-                {
-                    self->setDisposeListener([=](spTrackEntry* entry){
-                        executeSpineEvent(self, handler, eventType, entry);
-                    });
-                    ScriptHandlerMgr::getInstance()->addObjectHandler((void*)self, handler, ScriptHandlerMgr::HandlerType::EVENT_SPINE_ANIMATION_DISPOSE);
-                }
-                    break;
-                case spEventType::SP_ANIMATION_COMPLETE:
-                    {
-                        self->setCompleteListener([=](spTrackEntry* entry){
-                            executeSpineEvent(self, handler, eventType, entry);
-                        });
-                        ScriptHandlerMgr::getInstance()->addObjectHandler((void*)self, handler, ScriptHandlerMgr::HandlerType::EVENT_SPINE_ANIMATION_COMPLETE);
-                    }
-                    break;
-                case spEventType::SP_ANIMATION_EVENT:
-                    {
-                        self->setEventListener([=](spTrackEntry* entry, spEvent* event){
-                            executeSpineEvent(self, handler, eventType, entry, event);
-                        });
-                        ScriptHandlerMgr::getInstance()->addObjectHandler((void*)self, handler, ScriptHandlerMgr::HandlerType::EVENT_SPINE_ANIMATION_EVENT);
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
+		if (argc > 1) {
+			if (NULL != self) {
+				int handler = (toluafix_ref_function(tolua_S, 2, 0));
+				spEventType eventType = static_cast<spEventType>((int)tolua_tonumber(tolua_S, 3, 0));
+
+				switch (eventType) {
+				case spEventType::SP_ANIMATION_START:
+				{
+					self->setStartListener([=](spTrackEntry* entry) {
+						executeSpineEvent(self, handler, eventType, entry);
+					});
+					ScriptHandlerMgr::getInstance()->addObjectHandler((void*)self, handler, ScriptHandlerMgr::HandlerType::EVENT_SPINE_ANIMATION_START);
+				}
+				break;
+				case spEventType::SP_ANIMATION_INTERRUPT:
+				{
+					self->setInterruptListener([=](spTrackEntry* entry) {
+						executeSpineEvent(self, handler, eventType, entry);
+					});
+					ScriptHandlerMgr::getInstance()->addObjectHandler((void*)self, handler, ScriptHandlerMgr::HandlerType::EVENT_SPINE_ANIMATION_INTERRUPT);
+				}
+				break;
+				case spEventType::SP_ANIMATION_END:
+				{
+					self->setEndListener([=](spTrackEntry* entry) {
+						executeSpineEvent(self, handler, eventType, entry);
+					});
+					ScriptHandlerMgr::getInstance()->addObjectHandler((void*)self, handler, ScriptHandlerMgr::HandlerType::EVENT_SPINE_ANIMATION_END);
+				}
+				break;
+				case spEventType::SP_ANIMATION_DISPOSE:
+				{
+					self->setDisposeListener([=](spTrackEntry* entry) {
+						executeSpineEvent(self, handler, eventType, entry);
+					});
+					ScriptHandlerMgr::getInstance()->addObjectHandler((void*)self, handler, ScriptHandlerMgr::HandlerType::EVENT_SPINE_ANIMATION_DISPOSE);
+				}
+				break;
+				case spEventType::SP_ANIMATION_COMPLETE:
+				{
+					self->setCompleteListener([=](spTrackEntry* entry) {
+						executeSpineEvent(self, handler, eventType, entry);
+					});
+					ScriptHandlerMgr::getInstance()->addObjectHandler((void*)self, handler, ScriptHandlerMgr::HandlerType::EVENT_SPINE_ANIMATION_COMPLETE);
+				}
+				break;
+				case spEventType::SP_ANIMATION_EVENT:
+				{
+					self->setEventListener([=](spTrackEntry* entry, spEvent* event) {
+						executeSpineEvent(self, handler, eventType, entry, event);
+					});
+					ScriptHandlerMgr::getInstance()->addObjectHandler((void*)self, handler, ScriptHandlerMgr::HandlerType::EVENT_SPINE_ANIMATION_EVENT);
+				}
+				break;
+				default: {
+					break;
+				}
+				}
+			}
+		} else {
+			int handler = (toluafix_ref_function(tolua_S, 2, 0));
+			self->setEventListener([=](spTrackEntry* entry, spEvent* event) {
+				executeSpineEvent(self, handler, spEventType::SP_ANIMATION_EVENT, entry, event);
+			});
+			ScriptHandlerMgr::getInstance()->addObjectHandler((void*)self, handler, ScriptHandlerMgr::HandlerType::EVENT_SPINE);
+		}
     }
     return 0;
 #ifndef TOLUA_RELEASE

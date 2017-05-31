@@ -47,7 +47,7 @@ extern "C" {
 #include "physics/CCPhysicsShape.h"
 #include "physics/CCPhysicsWorld.h"
 #include "renderer/CCGLProgram.h"
-
+#include "Box2D/Box2D.h"
 
 using namespace cocos2d;
 
@@ -475,6 +475,8 @@ extern bool luaval_to_uniform(lua_State* L, int lo, cocos2d::Uniform* outValue, 
  */
 extern bool luaval_to_vertexattrib(lua_State* L, int lo, cocos2d::VertexAttrib* outValue, const char* funcName = "");
 
+extern bool luaval_to_b2Vec2(lua_State* L,int lo,b2Vec2* outValue);
+extern bool luaval_to_array_of_b2Vec2(lua_State* L,int lo,b2Vec2 **points, int *numPoints);
 
 /**
  * Get a Vec2 object value from the given acceptable index of stack.

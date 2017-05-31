@@ -136,6 +136,7 @@ public:
      */
     virtual int executeScriptFile(const char* filename);
 
+	virtual	int executeScriptFileParameter(const char* filename, const char* functions,  LuaValueDict data);
     /**
      * Execute a scripted global function.
      * The function should not take any parameters and should return an integer.
@@ -197,7 +198,7 @@ public:
      * Pushes a nil value onto the stack.
      */
     virtual void pushNil(void);
-    
+	virtual void pushUserDate(void* v);
     /**
      * Pushes a Ref object onto the stack.
      *

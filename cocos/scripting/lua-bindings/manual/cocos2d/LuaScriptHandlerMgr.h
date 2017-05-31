@@ -194,8 +194,6 @@ public:
         EVENT_MOUSE_MOVE,
         EVENT_MOUSE_SCROLL,
         
-        EVENT_SPINE,
-        
         EVENT_PHYSICS_CONTACT_BEGIN,
         EVENT_PHYSICS_CONTACT_PRESOLVE,
         EVENT_PHYSICS_CONTACT_POSTSOLVE,
@@ -219,6 +217,13 @@ public:
         
         EVENT_CUSTOM_BEGAN = 10000,
         EVENT_CUSTOM_ENDED = 11000,
+
+        EVENT_SPINE,
+		EVENT_SPINEPHYSICS_CONTACT,
+		EVENT_BOX2D_CONTACE_BEGIN,
+		EVENT_BOX2D_CONTACE_END,
+		EVENT_BOX2D_CONTACE_PRESOLVE,
+		EVENT_GAMESDK,
     };
     
     ///! @cond
@@ -301,6 +306,7 @@ public:
      * @js NA
      */
     void removeObjectAllHandlers(void* object);
+	void removeAllObjectHandlers();
     
     /**
      * Add customizable relationship among c++ Ref object, HandlerType and the reference index corresponding to the pointer of Lua function.

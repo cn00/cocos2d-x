@@ -1091,8 +1091,95 @@ bool luaval_to_vertexattrib(lua_State* L, int lo, cocos2d::VertexAttrib* outValu
 
         return true;
     }
-
+    
     return false;
+}
+
+bool luaval_to_b2Vec2(lua_State* L,int lo,b2Vec2* outValue)
+{
+	if (NULL == L || NULL == outValue)
+		return false;
+
+	bool ok = true;
+
+	tolua_Error tolua_err;
+	if (!tolua_istable(L, lo, 0, &tolua_err) )
+	{
+#if COCOS2D_DEBUG >=1
+		luaval_to_native_err(L,"#ferror:",&tolua_err);
+#endif
+		ok = false;
+	}
+
+
+	if (ok)
+	{
+		lua_pushstring(L, "x");
+		lua_gettable(L, lo);
+		outValue->x = lua_isnil(L, -1) ? 0 : lua_tonumber(L, -1);
+		lua_pop(L, 1);
+
+		lua_pushstring(L, "y");
+		lua_gettable(L, lo);
+		outValue->y = lua_isnil(L, -1) ? 0 : lua_tonumber(L, -1);
+		lua_pop(L, 1);
+	}
+	return ok;
+}
+
+bool luaval_to_array_of_b2Vec2(lua_State* L,int lo,b2Vec2 **points, int *numPoints)
+{
+	if (NULL == L)
+		return false;
+
+	bool ok = true;
+
+	tolua_Error tolua_err;
+
+	if (!tolua_istable(L, lo, 0, &tolua_err) )
+	{
+#if COCOS2D_DEBUG >=1
+		luaval_to_native_err(L,"#ferror:",&tolua_err);
+#endif
+		ok = false;
+	}
+
+	if (ok)
+	{
+		size_t len = lua_objlen(L, lo);
+		if (len > 0)
+		{
+			b2Vec2* array = (b2Vec2*)malloc(sizeof(b2Vec2) * len);
+			if (NULL == array)
+				return false;
+			for (uint32_t i = 0; i < len; ++i)
+			{
+				lua_pushnumber(L,i + 1);
+				lua_gettable(L,lo);
+				if (!tolua_istable(L,-1, 0, &tolua_err))
+				{
+#if COCOS2D_DEBUG >=1
+					luaval_to_native_err(L,"#ferror:",&tolua_err);
+#endif
+					lua_pop(L, 1);
+					free(array);
+					return false;
+				}
+				ok &= luaval_to_b2Vec2(L, lua_gettop(L), &array[i]);
+				if (!ok)
+				{
+					lua_pop(L, 1);
+					free(array);
+					return false;
+				}
+				lua_pop(L, 1);
+			}
+
+			*numPoints = (int)len;
+			*points    = array;
+		}
+	}
+	return ok;
 }
 
 bool luaval_to_mat4(lua_State* L, int lo, cocos2d::Mat4* outValue , const char* funcName)

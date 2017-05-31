@@ -53,6 +53,7 @@ extern "C" {
 #include "scripting/lua-bindings/auto/lua_cocos2dx_physics_auto.hpp"
 #include "scripting/lua-bindings/manual/cocos2d/lua_cocos2dx_physics_manual.hpp"
 #include "scripting/lua-bindings/auto/lua_cocos2dx_experimental_auto.hpp"
+#include "scripting/lua-bindings/auto/lua_cocos2dx_gamesdk_auto.hpp"
 #include "scripting/lua-bindings/manual/cocos2d/lua_cocos2dx_experimental_manual.hpp"
 #include "base/ZipUtils.h"
 #include "deprecated/CCBool.h"
@@ -169,6 +170,7 @@ bool LuaStack::init(void)
 
     tolua_script_handler_mgr_open(_state);
 
+	register_all_cocos2dx_gamesdk(_state);
     // add cocos2dx loader
     addLuaLoader(cocos2dx_lua_loader);
 
@@ -290,6 +292,28 @@ int LuaStack::executeScriptFile(const char* filename)
     return rn;
 }
 
+int LuaStack::executeScriptFileParameter(const char* filename, const char* functions, LuaValueDict data)
+{
+	std::string fullPath = FileUtils::getInstance()->fullPathForFilename(filename);
+	++_callFromLua;
+	int nRet = luaL_dofile(_state, fullPath.c_str());
+	--_callFromLua;
+	CC_ASSERT(_callFromLua >= 0);
+	// lua_gc(_state, LUA_GCCOLLECT, 0);
+
+	if (nRet != 0)
+	{
+		CCLOG("[LUA ERROR] %s", lua_tostring(_state, -1));
+		lua_pop(_state, 1);
+		return nRet;
+	}
+	lua_getglobal(_state, functions);
+	pushLuaValueDict(data);
+	lua_call(_state, 1, 0);
+
+	return 0;
+}
+
 int LuaStack::executeGlobalFunction(const char* functionName)
 {
     lua_getglobal(_state, functionName);       /* query function by name, stack: function */
@@ -340,6 +364,11 @@ void LuaStack::pushString(const char* stringValue, int length)
 void LuaStack::pushNil(void)
 {
     lua_pushnil(_state);
+}
+
+void LuaStack::pushUserDate(void *p)
+{
+	lua_pushlightuserdata(_state,p);
 }
 
 void LuaStack::pushObject(Ref* objectValue, const char* typeName)
