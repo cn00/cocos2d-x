@@ -336,7 +336,7 @@ void Menu::alignItemsVerticallyWithPadding(float padding)
     for(const auto &child : _children)
         height += child->getContentSize().height * child->getScaleY() + padding;
 
-    float y = height / 2.0f;
+    float y = height * getAnchorPoint().y;
     
     for(const auto &child : _children) {
         child->setPosition(0, y - child->getContentSize().height * child->getScaleY() / 2.0f);
@@ -355,7 +355,7 @@ void Menu::alignItemsHorizontallyWithPadding(float padding)
     for(const auto &child : _children)
         width += child->getContentSize().width * child->getScaleX() + padding;
 
-    float x = -width / 2.0f;
+    float x = -width * getAnchorPoint().x;
     
     for(const auto &child : _children) {
         child->setPosition(x + child->getContentSize().width * child->getScaleX() / 2.0f, 0);
