@@ -68,6 +68,7 @@
 #include "base/base64.h"
 #include "base/ccUtils.h"
 #include "base/allocator/CCAllocatorDiagnostics.h"
+#include "scripting/lua-bindings/manual/CCLuaEngine.h"
 NS_CC_BEGIN
 
 extern const char* cocos2dVersion(void);
@@ -405,6 +406,13 @@ Console::Console()
     createCommandTouch();
     createCommandUpload();
     createCommandVersion();
+
+	addCommand({ "lua", "Execute lua cmd, e.g. lua print(cc.Director:getInstance():getDeltaTime())", [](int fd, const std::string& args) {
+		Console::Utility::mydprintf(fd, "args:%s\n", args.c_str());
+		auto engine = LuaEngine::getInstance();
+		engine->executeString(args.c_str());
+	} });
+
 }
 
 Console::~Console()
@@ -423,8 +431,8 @@ bool Console::listenOnTCP(int port)
 
     bzero(&hints, sizeof(struct addrinfo));
     hints.ai_flags = AI_PASSIVE;
-    hints.ai_family = AF_UNSPEC;
-    hints.ai_socktype = SOCK_STREAM;
+	hints.ai_family = AF_INET; // AF_UNSPEC: Do we need IPv6 ?
+	hints.ai_socktype = SOCK_STREAM;
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_WINRT)
     WSADATA wsaData;
@@ -432,7 +440,7 @@ bool Console::listenOnTCP(int port)
 #endif
 
     if ( (n = getaddrinfo(nullptr, serv, &hints, &res)) != 0) {
-        fprintf(stderr,"net_listen error for %s: %s", serv, gai_strerror(n));
+        fprintf(stderr,"net_listen error for %s: %ws", serv, gai_strerror(n));
         return false;
     }
 
