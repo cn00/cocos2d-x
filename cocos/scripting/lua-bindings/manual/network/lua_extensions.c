@@ -9,9 +9,12 @@ extern "C" {
 #include "luasocket/luasocket_scripts.h"
 #include "luasocket/mime.h"
 
+//lsqlite3
+#include "lsqlite3/lsqlite3.h"
+
 static luaL_Reg luax_exts[] = {
     {"socket.core", luaopen_socket_core},
-    {"mime.core", luaopen_mime_core},
+	{ "mime.core", luaopen_mime_core },
     {NULL, NULL}
 };
 
@@ -28,6 +31,7 @@ void luaopen_lua_extensions(lua_State *L)
     }
     lua_pop(L, 2);
 
+	luaopen_lsqlite3(L);
     luaopen_luasocket_scripts(L);
 }
 
