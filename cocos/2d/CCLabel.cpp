@@ -34,7 +34,6 @@
 #include "2d/CCSpriteBatchNode.h"
 #include "2d/CCDrawNode.h"
 #include "2d/CCCamera.h"
-#include "base/ccUTF8.h"
 #include "platform/CCFileUtils.h"
 #include "renderer/CCRenderer.h"
 #include "renderer/ccGLStateCache.h"
@@ -45,6 +44,17 @@
 #include "2d/CCFontFNT.h"
 
 NS_CC_BEGIN
+
+const std::string _ttfConfig::getDescription() const {
+	return StringUtils::format("{T=\"TTFConfig\""
+		",fontFilePath=\"%s\",fontSize=%d,glyphs=%d,customGlyphs=%d"
+		",distanceFieldEnabled=%d,outlineSize=%d,italics=%d"
+		",bold=%d,underline=%d, strikethrough=%d"
+		"}",
+		fontFilePath.c_str(), fontSize, glyphs, customGlyphs,
+		distanceFieldEnabled, outlineSize, italics,
+		bold, underline, strikethrough);
+}
 
 /**
  * LabelLetter used to update the quad in texture atlas without SpriteBatchNode.
@@ -384,6 +394,7 @@ Label::Label(TextHAlignment hAlignment /* = TextHAlignment::LEFT */,
 , _boldEnabled(false)
 , _underlineNode(nullptr)
 , _strikethroughEnabled(false)
+, _bmFontPath("")
 {
     setAnchorPoint(Vec2::ANCHOR_MIDDLE);
     reset();
@@ -2007,12 +2018,39 @@ void Label::updateColor()
 
 std::string Label::getDescription() const
 {
-    char tmp[50];
-    sprintf(tmp, "<Label | Tag = %d, Label = >", _tag);
-    std::string ret = tmp;
-    ret += _utf8Text;
-
-    return ret;
+	return StringUtils::format("{T=\"Label\""
+		",Ancestor=%s"
+		",_utf8Text=\"%s\",_currentLabelType=%d"
+		",_bmFontPath=\"%s\",_outlineSize=%f"
+		",_lineHeight=%f"
+		",_lineSpacing=%f"
+		",_additionalKerning=%f"
+		//",_horizontalKernings=%f"
+		",_lineBreakWithoutSpaces=%d"
+		",_maxLineWidth=%f"
+		",_labelDimensions={width=%f,height=%f}"
+		",_labelWidth=%f"
+		",_labelHeight=%f"
+		",_hAlignment=%d"
+		",_vAlignment=%d"
+		",_fontConfig=%s"
+		"}"
+		, Node::getDescription().c_str()
+		, _utf8Text.c_str(), _currentLabelType
+		, _bmFontPath.c_str(), _outlineSize
+		, _lineHeight
+		, _lineSpacing
+		, _additionalKerning
+		//, *_horizontalKernings
+		, _lineBreakWithoutSpaces
+		, _maxLineWidth
+		, _labelDimensions.width,_labelDimensions.height
+		, _labelWidth
+		, _labelHeight
+		, _hAlignment
+		, _vAlignment
+		, _fontConfig.getDescription().c_str()
+	);
 }
 
 const Size& Label::getContentSize() const

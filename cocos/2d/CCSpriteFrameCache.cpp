@@ -280,6 +280,8 @@ void SpriteFrameCache::addSpriteFramesWithDictionary(ValueMap& dictionary, Textu
             }
         }
 
+		spriteFrame->setFrameName(spriteFrameName);
+
         bool flag = NinePatchImageParser::isNinePatchImage(spriteFrameName);
         if(flag)
         {

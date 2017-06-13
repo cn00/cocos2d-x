@@ -29,6 +29,7 @@ THE SOFTWARE.
 #include "2d/CCSpriteFrame.h"
 #include "base/CCDirector.h"
 #include "platform/CCFileUtils.h"
+#include "base/ccUTF8.h"
 
 NS_CC_BEGIN
 
@@ -78,6 +79,7 @@ SpriteFrame* SpriteFrame::create(const std::string& filename, const Rect& rect, 
 SpriteFrame::SpriteFrame()
 : _rotated(false)
 , _texture(nullptr)
+, _frameName("")
 {
 }
 
@@ -244,6 +246,15 @@ const PolygonInfo& SpriteFrame::getPolygonInfo() const
 bool SpriteFrame::hasPolygonInfo() const
 {
     return _polygonInfo.triangles.vertCount != 0;
+}
+
+const std::string & SpriteFrame::getTextureFilename()
+{
+	if (_textureFilename.empty() && _texture) {
+		return _texture->getPath();
+	} else {
+		return _textureFilename;
+	}
 }
 
 NS_CC_END

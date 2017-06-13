@@ -218,7 +218,25 @@ void Node::cleanup()
 
 std::string Node::getDescription() const
 {
-    return StringUtils::format("<Node | Tag = %d", _tag);
+    return StringUtils::format("{T=\"Node\",Tag=%d,_ID=%d,_luaID=%d"
+		",_name=\"%s\""
+		",_rotation={x=%f,y=%f}"
+		",_rotationZ={x=%f,y=%f}"
+		",_scale={x=%f,y=%f,z=%f}"
+		",_position={x=%f,y=%f,z=%f}"
+		",_skew={x=%f,y=%f}"
+		",_anchorPoint={x=%f,y=%f}"
+		",_localZOrder=%d,_globalZOrder=%d"
+		"}", _tag , _ID, _luaID
+		, _name.c_str()
+		, _rotationX, _rotationY
+		, _rotationZ_X, _rotationZ_Y
+		, _scaleX, _scaleY, _scaleZ
+		, _position.x, _position.y, _positionZ
+		, _skewX, _skewY
+		, _anchorPoint.x, _anchorPoint.y
+		, _localZOrder,_globalZOrder
+	);
 }
 
 // MARK: getters / setters

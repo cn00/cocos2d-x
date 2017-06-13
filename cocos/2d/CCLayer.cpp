@@ -442,7 +442,8 @@ void Layer::onTouchesCancelled(const std::vector<Touch*>& touches, Event *event)
 
 std::string Layer::getDescription() const
 {
-    return StringUtils::format("<Layer | Tag = %d>", _tag);
+    return StringUtils::format("{T=\"Layer\", Ancestor=%s, _touchEnabled=%d, _accelerometerEnabled=%d}",
+		 Node::getDescription().c_str(), _touchEnabled, _accelerometerEnabled);
 }
 
 __LayerRGBA::__LayerRGBA()
@@ -633,7 +634,28 @@ void LayerColor::onDraw(const Mat4& transform, uint32_t /*flags*/)
 
 std::string LayerColor::getDescription() const
 {
-    return StringUtils::format("<LayerColor | Tag = %d>", _tag);
+    return StringUtils::format(
+		"{T=\"LayerColor\", Ancestor=%s, _squareColors={"
+			"[1]={r=%d,g=%d,b=%d,a=%d},"
+			"[2]={r=%d,g=%d,b=%d,a=%d},"
+			"[3]={r=%d,g=%d,b=%d,a=%d},"
+			"[4]={r=%d,g=%d,b=%d,a=%d}"
+		"},_squareVertices={"
+			"[1]={x=%f,y=%f},"
+			"[2]={x=%f,y=%f},"
+			"[3]={x=%f,y=%f},"
+			"[4]={x=%f,y=%f}"
+		"}", 
+		_tag, Layer::getDescription().c_str(), 
+		_squareColors[0].r, _squareColors[0].g, _squareColors[0].b, _squareColors[0].a,
+		_squareColors[1].r, _squareColors[1].g, _squareColors[1].b, _squareColors[1].a,
+		_squareColors[2].r, _squareColors[2].g, _squareColors[2].b, _squareColors[2].a,
+		_squareColors[3].r, _squareColors[4].g, _squareColors[4].b, _squareColors[4].a,
+		_squareVertices[0].x, _squareVertices[0].y,
+		_squareVertices[1].x, _squareVertices[1].y,
+		_squareVertices[2].x, _squareVertices[2].y,
+		_squareVertices[3].x, _squareVertices[3].y
+	);
 }
 
 //
@@ -840,7 +862,21 @@ void LayerGradient::setCompressedInterpolation(bool compress)
 
 std::string LayerGradient::getDescription() const
 {
-    return StringUtils::format("<LayerGradient | Tag = %d>", _tag);
+	return StringUtils::format(
+		"{T=\"LayerColor\", Ancestor=%s,"
+		"_startColor={r=%d,g=%d,b=%d},"
+		"_endColor={r=%d,g=%d,b=%d},"
+		"_startOpacity=%d,"
+		"_endOpacity=%d,"
+		"_alongVector={x=%f,y=%f}"
+		"}",
+		_tag, LayerColor::getDescription().c_str(),
+		_startColor.r, _startColor.g, _startColor.b,
+		_endColor.r, _endColor.g, _endColor.b,
+		_startOpacity,
+		_endOpacity,
+		_alongVector.x, _alongVector.y
+	);
 }
 
 /// MultiplexLayer

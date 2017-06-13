@@ -220,9 +220,6 @@ bool Sprite::initWithSpriteFrameName(const std::string& spriteFrameName)
         return false;
     }
 
-    _fileName = spriteFrameName;
-    _fileType = 1;
-
     SpriteFrame *frame = SpriteFrameCache::getInstance()->getSpriteFrameByName(spriteFrameName);
     return initWithSpriteFrame(frame);
 }
@@ -1582,6 +1579,9 @@ void Sprite::setSpriteFrame(SpriteFrame *spriteFrame)
         setTexture(texture);
     }
 
+	_fileName = _texture->getPath() + "#" + spriteFrame->getFrameName();
+	_fileType = 1;
+
     // update rect
     _rectRotated = spriteFrame->isRotated();
     setTextureRect(spriteFrame->getRect(), _rectRotated, spriteFrame->getOriginalSize());
@@ -1702,7 +1702,10 @@ std::string Sprite::getDescription() const
         texture_id = _batchNode->getTextureAtlas()->getTexture()->getName();
     else
         texture_id = _texture->getName();
-    return StringUtils::format("<Sprite | Tag = %d, TextureID = %d>", _tag, texture_id );
+	return StringUtils::format("{T=\"Sprite\", Ancestor=%s"
+		",_fileName=\"%s\"}", 
+		Node::getDescription().c_str(), 
+		_fileName.c_str()); // lua format
 }
 
 const PolygonInfo& Sprite::getPolygonInfo() const

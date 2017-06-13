@@ -31,6 +31,7 @@
 #include "renderer/CCQuadCommand.h"
 #include "2d/CCFontAtlas.h"
 #include "base/ccTypes.h"
+#include "base/ccUTF8.h"
 
 NS_CC_BEGIN
 
@@ -79,6 +80,7 @@ typedef struct _ttfConfig
             distanceFieldEnabled = false;
         }
     }
+	const std::string getDescription() const;
 } TTFConfig;
 
 enum class TextFormatter : char

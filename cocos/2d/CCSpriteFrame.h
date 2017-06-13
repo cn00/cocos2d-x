@@ -252,6 +252,10 @@ public:
      */
     bool hasPolygonInfo() const;
 
+	const std::string& getTextureFilename();
+	void setFrameName(std::string s) { _frameName = s; }
+	const std::string& getFrameName(){return _frameName;}
+
 CC_CONSTRUCTOR_ACCESS:
     /**
      * @lua NA
@@ -296,7 +300,7 @@ protected:
     Vec2 _offsetInPixels;
     Size _originalSizeInPixels;
     Texture2D *_texture;
-    std::string  _textureFilename;
+    std::string  _textureFilename, _frameName;
     PolygonInfo _polygonInfo;
 };
 
