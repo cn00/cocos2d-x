@@ -232,16 +232,15 @@ public: virtual void set##funName(varType var)   \
 
 #elif COCOS2D_DEBUG == 1
 #define CCLOG(format, ...)      cocos2d::log(format, ##__VA_ARGS__)
-#define CCLOGERROR(format,...)  cocos2d::log(format, ##__VA_ARGS__)
 #define CCLOGINFO(format,...)   do {} while (0)
 #define CCLOGWARN(...) __CCLOGWITHFUNCTION(__VA_ARGS__)
 
 #elif COCOS2D_DEBUG > 1
 #define CCLOG(format, ...)      cocos2d::log(format, ##__VA_ARGS__)
-#define CCLOGERROR(format,...)  cocos2d::log(format, ##__VA_ARGS__)
 #define CCLOGINFO(format,...)   cocos2d::log(format, ##__VA_ARGS__)
 #define CCLOGWARN(...) __CCLOGWITHFUNCTION(__VA_ARGS__)
 #endif // COCOS2D_DEBUG
+#define CCLOGERROR(format,...)  cocos2d::log(format, ##__VA_ARGS__)
 
 /** Lua engine debug */
 #if !defined(COCOS2D_DEBUG) || COCOS2D_DEBUG == 0 || CC_LUA_ENGINE_DEBUG == 0
