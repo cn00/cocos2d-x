@@ -2,5 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="..\lsqlite3.c" />
+    <ClCompile Include="..\..\sqlite3\src\sqlite3.c" />
   </ItemGroup>
 </Project>
