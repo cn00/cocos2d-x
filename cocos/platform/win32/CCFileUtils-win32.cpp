@@ -230,11 +230,11 @@ string FileUtilsWin32::getWritablePath() const
     WCHAR full_path[CC_MAX_PATH + 1] = { 0 };
     ::GetModuleFileName(nullptr, full_path, CC_MAX_PATH + 1);
 
+    wstring retPath;
     // Debug app uses executable directory; Non-debug app uses local app data directory
-//#ifndef _DEBUG
+#ifndef _DEBUG
     // Get filename of executable only, e.g. MyGame.exe
     WCHAR *base_name = wcsrchr(full_path, '\\');
-    wstring retPath;
     if(base_name)
     {
         WCHAR app_data_path[CC_MAX_PATH + 1];
@@ -260,15 +260,21 @@ string FileUtilsWin32::getWritablePath() const
         }
     }
     if (retPath.empty())
-//#endif // not defined _DEBUG
+#else // not defined _DEBUG
     {
         // If fetching of local app data directory fails, use the executable one
         retPath = full_path;
 
         // remove xxx.exe
-        retPath = retPath.substr(0, retPath.rfind(L"\\") + 1);
-    }
-
+        retPath = retPath.substr(0, retPath.rfind(L"\\") + 1).append(L"Documents\\");
+		BOOL ret = CreateDirectory(retPath.c_str(), NULL);
+		if (!ret && ERROR_ALREADY_EXISTS != GetLastError())
+		{
+			CCLOGERROR("Fail create directory %s !Error code is 0x%x", retPath.c_str(), GetLastError());
+			return false;
+		}
+	}
+#endif
     return convertPathFormatToUnixStyle(StringWideCharToUtf8(retPath));
 }
 

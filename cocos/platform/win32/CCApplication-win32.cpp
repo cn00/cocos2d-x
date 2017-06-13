@@ -84,10 +84,10 @@ int Application::run()
     initGLContextAttrs();
 
     // Initialize instance and cocos2d.
-    if (!applicationDidFinishLaunching())
-    {
-        return 1;
-    }
+    //if (!applicationDidFinishLaunching())
+    //{
+    //    return 1;
+    //}
 
     auto director = Director::getInstance();
     auto glview = director->getOpenGLView();
