@@ -1758,12 +1758,9 @@ static int db_exec_callback(void* user, int columns, char **data, char **names) 
 
     /* column values */
     lua_pushvalue(L, 6);
-	for (char* datai = *data; datai != NULL; datai = *data + columns)
-	{
-		for (n = 0; n < columns;) {
-			lua_pushstring(L, datai+n);
-			lua_rawseti(L, -2, n);
-		}
+	for (n = 0; n < columns; ++n) {
+		lua_pushstring(L, data[n]);
+		lua_rawseti(L, -2, n);
 	}
 
     /* columns names */
