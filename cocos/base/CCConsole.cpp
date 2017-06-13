@@ -392,8 +392,8 @@ Console::Console()
 , _bindAddress("")
 {
     createCommandAllocator();
-    createCommandConfig();
-    createCommandDebugMsg();
+	addCommand({ "config", "Print the Configuration object. Args: [-h | help | ]",CC_CALLBACK_2(Console::commandConfig, this) });
+	createCommandDebugMsg();
     createCommandDirector();
     createCommandExit();
     createCommandFileUtils();
@@ -408,8 +408,11 @@ Console::Console()
     createCommandVersion();
 
 	addCommand({ "lua", "Execute lua cmd, e.g. lua print(cc.Director:getInstance():getDeltaTime())", [](int fd, const std::string& args) {
-		auto engine = LuaEngine::getInstance();
-		engine->executeString(args.c_str());
+		Scheduler *sched = Director::getInstance()->getScheduler();
+		sched->performFunctionInCocosThread([=]() {
+			auto engine = LuaEngine::getInstance();
+			engine->executeString(args.c_str());
+		});
 	} });
 
 }
