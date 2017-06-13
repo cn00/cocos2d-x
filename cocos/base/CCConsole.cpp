@@ -408,7 +408,6 @@ Console::Console()
     createCommandVersion();
 
 	addCommand({ "lua", "Execute lua cmd, e.g. lua print(cc.Director:getInstance():getDeltaTime())", [](int fd, const std::string& args) {
-		Console::Utility::mydprintf(fd, "args:%s\n", args.c_str());
 		auto engine = LuaEngine::getInstance();
 		engine->executeString(args.c_str());
 	} });
@@ -707,14 +706,15 @@ void Console::loop()
         if( !_DebugStrings.empty() ) {
             if (_DebugStringsMutex.try_lock())
             {
-                for (const auto &str : _DebugStrings) {
-                    for (auto fd : _fds) {
-                        Console::Utility::sendToConsole(fd, str.c_str(), str.length());
-                    }
-                }
-                _DebugStrings.clear();
-                _DebugStringsMutex.unlock();
-            }
+				for (auto fd : _fds) {
+					for (const auto &str : _DebugStrings) {
+						Console::Utility::sendToConsole(fd, str.c_str(), str.length());
+					}
+					Console::Utility::sendPrompt(fd);
+				}
+				_DebugStrings.clear();
+				_DebugStringsMutex.unlock();
+			}
         }
     }
     
@@ -827,8 +827,8 @@ bool Console::parseCommand(int fd)
         if(r < 0)
         {
             const char err[] = "Unknown error!\n";
-            Console::Utility::sendPrompt(fd);
             Console::Utility::sendToConsole(fd, err, strlen(err));
+            Console::Utility::sendPrompt(fd);
             return false;
         }
     }
