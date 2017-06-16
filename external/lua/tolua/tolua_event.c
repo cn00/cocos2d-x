@@ -54,6 +54,26 @@ static void storeatubox (lua_State* L, int lo)
 #endif
 }
 
+static int module_tostring_event(lua_State *L) {
+	// stack:  obj key ... obj
+	while (lua_getmetatable(L, -1)) {           /* stack: obj key obj mt */
+		//lua_remove(L, -2);                    /* stack: ... mt */
+
+		lua_pushstring(L, ".classname");        /* stack: ... mt key */
+		lua_rawget(L, -2);                      /* stack: ... mt value */
+		if (!lua_isnil(L, -1)) {
+			lua_pushfstring(L, "%s(%p)", lua_tostring(L, -1), lua_touserdata(L, 1));
+			return 1;
+		}
+		else {
+			lua_pop(L, 1);
+		}
+	}
+	lua_pushnil(L);
+	return 1;
+}
+
+
 /* Module index function
 */
 static int module_index_event (lua_State* L)
@@ -640,5 +660,10 @@ TOLUA_API void tolua_classevents (lua_State* L)
     lua_rawget(L, LUA_REGISTRYINDEX);
     /*lua_pushcfunction(L,class_gc_event);*/
     lua_rawset(L,-3);
+
+	lua_pushstring(L, "__tostring");
+	lua_pushcfunction(L, module_tostring_event);
+	lua_rawset(L, -3);
+
 }
 
