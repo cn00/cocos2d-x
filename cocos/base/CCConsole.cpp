@@ -411,6 +411,7 @@ Console::Console()
 		Scheduler *sched = Director::getInstance()->getScheduler();
 		sched->performFunctionInCocosThread([=]() {
 			auto engine = LuaEngine::getInstance();
+			cocos2d::log(args.c_str());
 			engine->executeString(args.c_str());
 		});
 	} });
@@ -865,7 +866,7 @@ bool Console::parseCommand(int fd)
         auto cmd = it->second;
         cmd.commandGeneric(fd, args2);
     }else if(strcmp(buf, "\r\n") != 0) {
-        const char err[] = "Unknown command. Type 'help' for options\n";
+        const char err[] = "Unknown command. Type 'help' for options\r\n";
         Console::Utility::sendToConsole(fd, err, strlen(err));
     }
     Console::Utility::sendPrompt(fd);
@@ -885,7 +886,12 @@ void Console::addClient()
     
     // add fd to list of FD
     if( fd != -1 ) {
-        FD_SET(fd, &_read_set);
+		char buf[INET_ADDRSTRLEN] = { 0 };
+		struct sockaddr_in *sin = (struct sockaddr_in*) addr;
+		inet_ntop(AF_INET, &sin->sin_addr, buf, sizeof(buf));
+		cocos2d::log("Console: IPV4 client login %s:%d", buf, ntohs(sin->sin_port));
+
+		FD_SET(fd, &_read_set);
         _fds.push_back(fd);
         _maxfd = std::max(_maxfd,fd);
         
