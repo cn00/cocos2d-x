@@ -127,12 +127,12 @@ namespace {
     
     void _log(const char *format, va_list args)
     {
-        int bufferSize = MAX_LOG_LENGTH;
-        char* buf = nullptr;
+		static int logline = 0;
+        int bufferSize = MAX_LOG_LENGTH;// 16k
+        static char* buf = new (std::nothrow) char[bufferSize];
         
         do
         {
-            buf = new (std::nothrow) char[bufferSize];
             if (buf == nullptr)
                 return; // not enough memory
             
@@ -140,8 +140,8 @@ namespace {
             if (ret < 0)
             {
                 bufferSize *= 2;
-                
                 delete [] buf;
+				buf = new (std::nothrow) char[bufferSize];
             }
             else
                 break;
@@ -157,13 +157,15 @@ namespace {
         
         int pos = 0;
         int len = strlen(buf);
-        char tempBuf[MAX_LOG_LENGTH + 1] = { 0 };
-        WCHAR wszBuf[MAX_LOG_LENGTH + 1] = { 0 };
+        static char* tempBuf = new char[MAX_LOG_LENGTH + 1];
+        static WCHAR* wszBuf = new WCHAR[MAX_LOG_LENGTH + 1];
         
-        do
+		printf("%4d:", ++logline);
+		do
         {
+			memset(tempBuf, 0, MAX_LOG_LENGTH);
+			memset(wszBuf, 0, MAX_LOG_LENGTH*sizeof(WCHAR));
             std::copy(buf + pos, buf + pos + MAX_LOG_LENGTH, tempBuf);
-            
             tempBuf[MAX_LOG_LENGTH] = 0;
             
             MultiByteToWideChar(CP_UTF8, 0, tempBuf, -1, wszBuf, sizeof(wszBuf));
@@ -183,7 +185,6 @@ namespace {
 #endif
         
         Director::getInstance()->getConsole()->log(buf);
-        delete [] buf;
     }
 }
 
@@ -720,7 +721,8 @@ void Console::loop()
 				_DebugStringsMutex.unlock();
 			}
         }
-    }
+		std::this_thread::sleep_for(std::chrono::milliseconds(300));
+    }// while
     
     // clean up: ignore stdin, stdout and stderr
     for(const auto &fd: _fds )
