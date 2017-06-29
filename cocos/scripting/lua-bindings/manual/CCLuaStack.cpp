@@ -131,12 +131,12 @@ LuaStack *LuaStack::attach(lua_State *L)
 
 bool LuaStack::init(void)
 {
-    _state = lua_open();
+	_state = luaL_newstate();
     luaL_openlibs(_state);
     toluafix_open(_state);
 
     // Register our version of the global "print" function
-    const luaL_reg global_functions [] = {
+    const luaL_Reg global_functions [] = {
         {"print", lua_print},
         {"release_print",lua_release_print},
         {nullptr, nullptr}
@@ -303,7 +303,7 @@ int LuaStack::executeScriptFileParameter(const char* filename, const char* funct
 
 	if (nRet != 0)
 	{
-		CCLOG("[LUA ERROR] %s", lua_tostring(_state, -1));
+		CCLOGWARN("[LUA ERROR] %s", lua_tostring(_state, -1));
 		lua_pop(_state, 1);
 		return nRet;
 	}
@@ -474,7 +474,7 @@ int LuaStack::executeFunction(int numArgs)
     {
         if (traceback == 0)
         {
-            CCLOG("[LUA ERROR] %s", lua_tostring(_state, - 1));        /* L: ... error */
+			CCLOGERROR("[LUA ERROR] %s", lua_tostring(_state, - 1));        /* L: ... error */
             lua_pop(_state, 1); // remove error message from stack
         }
         else                                                            /* L: ... G error */
@@ -587,7 +587,7 @@ int LuaStack::executeFunctionReturnArray(int handler,int numArgs,int numResults,
         {
             if (traceback == 0)
             {
-                CCLOG("[LUA ERROR] %s", lua_tostring(_state, - 1));        /* L: ... error */
+				CCLOGWARN("[LUA ERROR] %s", lua_tostring(_state, - 1));        /* L: ... error */
                 lua_pop(_state, 1); // remove error message from stack
             }
             else                                                            /* L: ... G error */
@@ -679,7 +679,7 @@ int LuaStack::executeFunction(int handler, int numArgs, int numResults, const st
         {
             if (traceCallback == 0)
             {
-                CCLOG("[LUA ERROR] %s", lua_tostring(_state, - 1));        /* L: ... error */
+				CCLOGWARN("[LUA ERROR] %s", lua_tostring(_state, - 1));        /* L: ... error */
                 lua_pop(_state, 1);                                        // remove error message from stack
             }
             else                                                           /* L: ... G error */

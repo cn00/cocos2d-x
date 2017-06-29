@@ -40,9 +40,10 @@
 /* luaL_typerror always used with arg at ndx == NULL */
 #define luaL_typerror(L,ndx,str) luaL_error(L,"bad argument %d (%s expected, got nil)",ndx,str)
 /* luaL_register used once, so below expansion is OK for this case */
-#define luaL_register(L,name,reg) lua_newtable(L);luaL_setfuncs(L,reg,0)
+//#define luaL_register(L,name,reg) lua_newtable(L);luaL_setfuncs(L,reg,0)
+#define luaL_register(L,n,l)	(luaL_openlib(L,(n),(l),0))
 /* luaL_openlib always used with name == NULL */
-#define luaL_openlib(L,name,reg,nup) luaL_setfuncs(L,reg,nup)
+//#define luaL_openlib(L,name,reg,nup) luaL_setfuncs(L,reg,nup)
 
 #if LUA_VERSION_NUM > 502
 /*
@@ -2374,7 +2375,7 @@ static void create_meta(lua_State *L, const char *name, const luaL_Reg *lib) {
 }
 
 LUALIB_API int luaopen_lsqlite3(lua_State *L) {
-    create_meta(L, sqlite_meta, dblib);
+	create_meta(L, sqlite_meta, dblib);
     create_meta(L, sqlite_vm_meta, vmlib);
     create_meta(L, sqlite_bu_meta, dbbulib);
     create_meta(L, sqlite_ctx_meta, ctxlib);

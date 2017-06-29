@@ -681,6 +681,7 @@ FileUtils::Status FileUtils::getContents(const std::string& filename, ResizableB
     size_t size = statBuf.st_size;
 
     buffer->resize(size);
+	memset(buffer->buffer(), 0, size);
     size_t readsize = fread(buffer->buffer(), 1, size, fp);
     fclose(fp);
 

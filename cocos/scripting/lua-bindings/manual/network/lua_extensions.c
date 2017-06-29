@@ -5,9 +5,9 @@
 extern "C" {
 #endif
 // socket
-#include "luasocket/luasocket.h"
-#include "luasocket/luasocket_scripts.h"
-#include "luasocket/mime.h"
+#include "lua/luasocket/luasocket.h"
+#include "lua/luasocket/luasocket_scripts.h"
+#include "lua/luasocket/mime.h"
 
 //lsqlite3
 #include "lsqlite3/lsqlite3.h"
